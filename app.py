@@ -1,6 +1,7 @@
 import os
 import streamlit as st
 from main import extract_title, split_pdf
+import zipfile
 import tempfile
 
 def main():
