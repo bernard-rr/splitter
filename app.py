@@ -47,12 +47,14 @@ def main():
                         st.write(file_name)
 
                     # Create a zip file containing the split files
-                    with ZipFile("split_files.zip", "w") as zip:
-                        for file_name in file_names:
-                            zip.write(file_name)
+                    with tempfile.TemporaryDirectory() as temp_dir:
+                        zip_file_path = os.path.join(temp_dir, "split_files.zip")
+                        with ZipFile(zip_file_path, "w") as zip:
+                            for file_name in file_names:
+                                zip.write(file_name)
 
-                    # Provide a download link for the zip file
-                    st.markdown("[Download all files](split_files.zip)")
+                        # Provide a download link for the zip file
+                        st.markdown(f"[Download all files]({zip_file_path})", unsafe_allow_html=True)
                 else:
                     st.write("No files were split.")
 
