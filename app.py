@@ -13,55 +13,60 @@ def main():
     uploaded_file = st.file_uploader("Upload PDF file", type=["pdf"])
 
     if uploaded_file is not None:
-        file_name = uploaded_file.name  # Get the original file name
-
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
             tmp.write(uploaded_file.getvalue())
             tmp_file_path = tmp.name
 
-            intervals_input = st.text_input("Enter the number of pages per file (optional):")
-            start_page_input = st.text_input("Enter the start page for title extraction (optional):")
-            start_line_input = st.text_input("Enter the start line on the selected page for title extraction (optional):")
+        # Save the uploaded file with the original name
+        original_file_name = uploaded_file.name
+        uploaded_file_path = os.path.join(tempfile.gettempdir(), original_file_name)
+        with open(uploaded_file_path, "wb") as file:
+            file.write(uploaded_file.getvalue())
 
-            if st.button("Split"):
-                intervals = int(intervals_input) if intervals_input else 1
-                start_page = int(start_page_input) if start_page_input else None
-                start_line = int(start_line_input) if start_line_input else None
+        intervals_input = st.text_input("Enter the number of pages per file (optional):")
+        start_page_input = st.text_input("Enter the start page for title extraction (optional):")
+        start_line_input = st.text_input("Enter the start line on the selected page for title extraction (optional):")
 
-                split_pdf(tmp_file_path, intervals, start_page, start_line)
+        if st.button("Split"):
+            intervals = int(intervals_input) if intervals_input else 1
+            start_page = int(start_page_input) if start_page_input else None
+            start_line = int(start_line_input) if start_line_input else None
 
-                st.write("PDF splitting complete.")
+            split_pdf(uploaded_file_path, intervals, start_page, start_line)
 
-                # Display the split PDF files
-                file_names = []
+            st.write("PDF splitting complete.")
 
-                if start_page is None:
-                    file_names = [file for file in os.listdir() if file.startswith("split_") and file.endswith(".pdf")]
-                else:
-                    for file in os.listdir():
-                        if file.endswith(".pdf"):
-                            page_number = int(file.split("_")[1].split(".")[0])
-                            if page_number >= start_page:
-                                file_names.append(file)
+            # Display the split PDF files
+            file_names = []
 
-                if file_names:
-                    st.write("Split files:")
-                    for file_name in file_names:
-                        st.write(file_name)
+            if start_page is None:
+                file_names = [file for file in os.listdir() if file.startswith("split_") and file.endswith(".pdf")]
+            else:
+                for file in os.listdir():
+                    if file.endswith(".pdf"):
+                        page_number = int(file.split("_")[1].split(".")[0])
+                        if page_number >= start_page:
+                            file_names.append(file)
 
-                    # Create a zip file containing the split files
-                    with tempfile.TemporaryDirectory() as temp_dir:
-                        zip_file_path = os.path.join(temp_dir, "split_files.zip")
-                        with ZipFile(zip_file_path, "w") as zip:
-                            for file_name in file_names:
-                                new_name = f"split_{file_name}"
-                                zip.write(file_name, arcname=new_name)
+            if file_names:
+                st.write("Split files:")
+                for file_name in file_names:
+                    st.write(file_name)
 
-                        # Provide a download button for the zip file
-                        st.download_button("Download all files", data=open(zip_file_path, "rb"), file_name="split_files.zip")
-                else:
-                    st.write("No files were split.")
+                # Create a zip file containing the split files
+                with tempfile.TemporaryDirectory() as temp_dir:
+                    zip_file_path = os.path.join(temp_dir, "split_files.zip")
+                    with ZipFile(zip_file_path, "w") as zip:
+                        for file_name in file_names:
+                            new_name = f"split_{original_file_name}_{file_name}"
+                            zip.write(file_name, arcname=new_name)
+
+                    # Provide a download button for the zip file
+                    st.download_button("Download all files", data=open(zip_file_path, "rb"), file_name="split_files.zip")
+            else:
+                st.write("No files were split.")
 
 
 if __name__ == "__main__":
     main()
+
