@@ -6,6 +6,13 @@ import tempfile
 
 
 
+import os
+import streamlit as st
+from main import extract_title, split_pdf
+from zipfile import ZipFile
+import tempfile
+
+
 def main():
     # Streamlit app
     st.title("PDF Splitting Tool")
@@ -29,8 +36,18 @@ def main():
 
             if st.button("Split"):
                 intervals = int(intervals_input) if intervals_input else 1
-                start_page = int(start_page_input) if start_page_input else None
-                start_line = int(start_line_input) if start_line_input else None
+
+                try:
+                    start_page = int(start_page_input) if start_page_input else None
+                except ValueError:
+                    st.write("Invalid start page input. Setting start page to None.")
+                    start_page = None
+
+                try:
+                    start_line = int(start_line_input) if start_line_input else None
+                except ValueError:
+                    st.write("Invalid start line input. Setting start line to None.")
+                    start_line = None
 
                 split_pdf(uploaded_file_path, intervals, start_page, start_line)
 
