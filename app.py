@@ -53,8 +53,8 @@ def main():
                             for file_name in file_names:
                                 zip.write(file_name)
 
-                        # Provide a download link for the zip file
-                        st.markdown(f"[Download all files]({zip_file_path})", unsafe_allow_html=True)
+                        # Provide a download button for the zip file
+                        st.download_button("Download all files", data=open(zip_file_path, "rb"), file_name="split_files.zip")
                 else:
                     st.write("No files were split.")
 
