@@ -19,6 +19,9 @@ def main():
             tmp_file_path = tmp.name
 
             original_file_name = uploaded_file.name
+            uploaded_file_path = os.path.join(tempfile.gettempdir(), original_file_name)
+            with open(uploaded_file_path, "wb") as file:
+                file.write(uploaded_file.getvalue())
 
             intervals_input = st.text_input("Enter the number of pages per file (optional):")
             start_page_input = st.text_input("Enter the start page for title extraction (optional):")
@@ -29,7 +32,7 @@ def main():
                 start_page = int(start_page_input) if start_page_input else None
                 start_line = int(start_line_input) if start_line_input else None
 
-                split_pdf(tmp_file_path, intervals, start_page, start_line)
+                split_pdf(uploaded_file_path, intervals, start_page, start_line)
 
                 st.write("PDF splitting complete.")
 
