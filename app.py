@@ -13,6 +13,8 @@ def main():
     uploaded_file = st.file_uploader("Upload PDF file", type=["pdf"])
 
     if uploaded_file is not None:
+        file_name = uploaded_file.name  # Get the original file name
+
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
             tmp.write(uploaded_file.getvalue())
             tmp_file_path = tmp.name
@@ -52,8 +54,7 @@ def main():
                         zip_file_path = os.path.join(temp_dir, "split_files.zip")
                         with ZipFile(zip_file_path, "w") as zip:
                             for file_name in file_names:
-                                original_name = os.path.splitext(uploaded_file.name)[0]
-                                new_name = f"split_{original_name}_{file_name}"
+                                new_name = f"split_{file_name}"
                                 zip.write(file_name, arcname=new_name)
 
                         # Provide a download button for the zip file
