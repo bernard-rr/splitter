@@ -5,6 +5,13 @@ from zipfile import ZipFile
 import tempfile
 
 
+import streamlit as st
+import tempfile
+import os
+from zipfile import ZipFile
+from main import split_pdf, extract_title
+
+
 def main():
     # Streamlit app
     st.title("PDF Splitting Tool")
@@ -42,11 +49,17 @@ def main():
             if start_page is None:
                 file_names = [file for file in os.listdir() if file.startswith("split_") and file.endswith(".pdf")]
             else:
-                for file in os.listdir():
-                    if file.endswith(".pdf"):
-                        page_number = int(file.split("_")[1].split(".")[0])
-                        if page_number >= start_page:
-                            file_names.append(file)
+                with open(uploaded_file_path, "rb") as file:
+                    pdf_file_path = file.read()
+                    file.seek(0)
+                    file_names = []
+                    split_pdf(file, intervals, start_page, start_line)
+                    for i in range(start_page, start_page + intervals):
+                        title = extract_title(pdf_file_path, i, start_line)
+                        if title:
+                            title = title.replace(" ", "_")
+                            file_name = f"split_{original_file_name}_{title}.pdf"
+                            file_names.append(file_name)
 
             if file_names:
                 st.write("Split files:")
@@ -58,8 +71,7 @@ def main():
                     zip_file_path = os.path.join(temp_dir, "split_files.zip")
                     with ZipFile(zip_file_path, "w") as zip:
                         for file_name in file_names:
-                            new_name = f"split_{original_file_name}_{file_name}"
-                            zip.write(file_name, arcname=new_name)
+                            zip.write(file_name)
 
                     # Provide a download button for the zip file
                     st.download_button("Download all files", data=open(zip_file_path, "rb"), file_name="split_files.zip")
@@ -69,4 +81,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
