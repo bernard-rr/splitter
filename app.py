@@ -5,12 +5,6 @@ from zipfile import ZipFile
 import tempfile
 
 
-import streamlit as st
-import tempfile
-import os
-from zipfile import ZipFile
-from main import split_pdf, extract_title
-
 
 def main():
     # Streamlit app
