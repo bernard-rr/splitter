@@ -18,6 +18,8 @@ def main():
             tmp.write(uploaded_file.getvalue())
             tmp_file_path = tmp.name
 
+        original_file_name = uploaded_file.name
+
             intervals_input = st.text_input("Enter the number of pages per file (optional):")
             start_page_input = st.text_input("Enter the start page for title extraction (optional):")
             start_line_input = st.text_input("Enter the start line on the selected page for title extraction (optional):")
@@ -55,7 +57,7 @@ def main():
                             for file_name in file_names:
                                 original_name = os.path.splitext(uploaded_file.name)[0]
                                 page_range = file_name.split("_")[1].split(".")[0]
-                                new_name = f"{original_name}_split_{page_range}.pdf"
+                                new_name = f"{original_file_name}_split_{page_range}.pdf"
                                 zip.write(file_name, arcname=new_name)
 
                         # Provide a download button for the zip file
