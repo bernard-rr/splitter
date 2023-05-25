@@ -5,6 +5,13 @@ from zipfile import ZipFile
 import tempfile
 
 
+dimport streamlit as st
+import tempfile
+import os
+from zipfile import ZipFile
+from main import split_pdf, extract_title
+
+
 def main():
     # Streamlit app
     st.title("PDF Splitting Tool")
@@ -52,10 +59,7 @@ def main():
                         zip_file_path = os.path.join(temp_dir, "split_files.zip")
                         with ZipFile(zip_file_path, "w") as zip:
                             for file_name in file_names:
-                                original_name = os.path.splitext(uploaded_file.name)[0]
-                                page_range = file_name.split("_")[1].split(".")[0]
-                                new_name = f"{original_name}_split_{page_range}.pdf"
-                                zip.write(file_name, arcname=new_name)
+                                zip.write(file_name)
 
                         # Provide a download button for the zip file
                         st.download_button("Download all files", data=open(zip_file_path, "rb"), file_name="split_files.zip")
