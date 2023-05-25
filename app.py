@@ -14,16 +14,16 @@ def main():
     uploaded_file = st.file_uploader("Upload PDF file", type=["pdf"])
 
     if uploaded_file is not None:
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
-            tmp.write(uploaded_file.getvalue())
-            tmp_file_path = tmp.name
+        # Save the uploaded file with the desired name
+        original_file_name = st.text_input("Enter the desired name for the file:")
+        if not original_file_name:
+            original_file_name = uploaded_file.name
 
-        # Save the uploaded file with the original name
-        original_file_name = uploaded_file.name
         uploaded_file_path = os.path.join(tempfile.gettempdir(), original_file_name)
         with open(uploaded_file_path, "wb") as file:
             file.write(uploaded_file.getvalue())
 
+        # Perform PDF splitting
         intervals_input = st.text_input("Enter the number of pages per file (optional):")
         start_page_input = st.text_input("Enter the start page for title extraction (optional):")
         start_line_input = st.text_input("Enter the start line on the selected page for title extraction (optional):")
@@ -43,17 +43,11 @@ def main():
             if start_page is None:
                 file_names = [file for file in os.listdir() if file.startswith("split_") and file.endswith(".pdf")]
             else:
-                with open(uploaded_file_path, "rb") as file:
-                    pdf_file_path = file.read()
-                    file.seek(0)
-                    file_names = []
-                    split_pdf(file, intervals, start_page, start_line)
-                    for i in range(start_page, start_page + intervals):
-                        title = extract_title(pdf_file_path, i, start_line)
-                        if title:
-                            title = title.replace(" ", "_")
-                            file_name = f"split_{original_file_name}_{title}.pdf"
-                            file_names.append(file_name)
+                for file in os.listdir():
+                    if file.endswith(".pdf"):
+                        page_number = int(file.split("_")[1].split(".")[0])
+                        if page_number >= start_page:
+                            file_names.append(file)
 
             if file_names:
                 st.write("Split files:")
