@@ -18,7 +18,7 @@ def main():
             tmp.write(uploaded_file.getvalue())
             tmp_file_path = tmp.name
 
-        original_file_name = uploaded_file.name
+            original_file_name = uploaded_file.name
 
             intervals_input = st.text_input("Enter the number of pages per file (optional):")
             start_page_input = st.text_input("Enter the start page for title extraction (optional):")
