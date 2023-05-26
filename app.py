@@ -5,6 +5,10 @@ from zipfile import ZipFile
 from main import split_pdf, extract_title
 
 
+def restart_app():
+    raise st.script_runner.RerunException(st.script_request_queue.RerunData(None))
+
+
 def main():
     # Streamlit app
     st.title("PDF Splitting Tool")
@@ -13,8 +17,8 @@ def main():
     uploaded_file = st.file_uploader("Upload PDF file", type=["pdf"])
 
     if st.button("Refresh"):
-            # Manually refresh the page
-            st.experimental_rerun()
+        # Clear everything and restart the app
+        restart_app()
 
     if uploaded_file is not None:
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
