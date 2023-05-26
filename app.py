@@ -62,7 +62,7 @@ def main():
                     zip_file_path = os.path.join(temp_dir, "split_files.zip")
                     with ZipFile(zip_file_path, "w") as zip:
                         for file_name in file_names:
-                            new_name = f"split_{file_name}"
+                            new_name = f"{file_name}"
                             zip.write(file_name, arcname=new_name)
 
                     # Provide a download button for the zip file
