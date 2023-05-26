@@ -5,6 +5,7 @@ from zipfile import ZipFile
 from main import split_pdf, extract_title
 
 
+@st.cache(allow_output_mutation=True)
 def main():
     # Streamlit app
     st.title("PDF Splitting Tool")
