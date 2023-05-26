@@ -1,10 +1,8 @@
-import os
 import streamlit as st
-from main import extract_title, split_pdf
-from zipfile import ZipFile
 import tempfile
-
-
+import os
+from zipfile import ZipFile
+from main import split_pdf, extract_title
 
 
 def main():
@@ -64,9 +62,13 @@ def main():
                             zip.write(file_name, arcname=new_name)
 
                     # Provide a download button for the zip file
-                    st.download_button("Download all files", data=open(zip_file_path, "rb"), file_name="split_files.zip")
+                    with open(zip_file_path, "rb") as zip_file:
+                        st.download_button("Download all files", data=zip_file, file_name="split_files.zip")
             else:
                 st.write("No files were split.")
+
+        # Clean up the temporary file
+        os.remove(uploaded_file_path)
 
 
 if __name__ == "__main__":
