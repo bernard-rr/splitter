@@ -5,13 +5,16 @@ from zipfile import ZipFile
 from main import split_pdf, extract_title
 
 
-@st.cache(allow_output_mutation=True, suppress_st_warning=True)
 def main():
     # Streamlit app
     st.title("PDF Splitting Tool")
 
     # File upload
     uploaded_file = st.file_uploader("Upload PDF file", type=["pdf"])
+
+    if st.button("Refresh"):
+            # Manually refresh the page
+            st.experimental_rerun()
 
     if uploaded_file is not None:
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
