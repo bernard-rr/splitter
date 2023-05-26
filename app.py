@@ -3,11 +3,11 @@ import tempfile
 import os
 from zipfile import ZipFile
 from main import split_pdf, extract_title
-
+import sys
+import subprocess
 
 def restart_app():
-    raise st.script_runner.RerunException(st.script_request_queue.RerunData(None))
-
+    subprocess.Popen([sys.executable] + sys.argv)
 
 def main():
     # Streamlit app
