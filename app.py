@@ -6,8 +6,6 @@ from main import split_pdf, extract_title
 import sys
 import subprocess
 
-def restart_app():
-    subprocess.Popen([sys.executable] + sys.argv)
 
 def main():
     # Streamlit app
@@ -15,10 +13,6 @@ def main():
 
     # File upload
     uploaded_file = st.file_uploader("Upload PDF file", type=["pdf"])
-
-    if st.button("Refresh"):
-        # Clear everything and restart the app
-        restart_app()
 
     if uploaded_file is not None:
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
